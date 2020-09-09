@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Menu, Icon } from 'semantic-ui-react';
 import { Helmet } from 'react-helmet';
 import { GamesPanel } from '../Games/GamesPanel';
@@ -28,12 +28,7 @@ export const Iag: React.FC = () => {
   // use history
   let history = useHistory();
 
-  // Get user profile on first load.
-  useEffect(() => {
-    isLoggedIn() ? getProfile() : history.push('/login');
-  }, []);
-
-  function getProfile(){
+  const getProfile = useCallback(() => {
 
     /*
     setUserData({
@@ -68,7 +63,12 @@ export const Iag: React.FC = () => {
       localStorage.removeItem('iagSession');
       history.push('/login');
     });
-  }
+  }, [history]);
+
+  // Get user profile on first load.
+  useEffect(() => {
+    isLoggedIn() ? getProfile() : history.push('/login');
+  }, [history, getProfile]);
 
   // TODO: move to api
   function handleLogout() {
