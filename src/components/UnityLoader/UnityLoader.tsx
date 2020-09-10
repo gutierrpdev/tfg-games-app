@@ -32,7 +32,6 @@ export const UnityLoader: React.FC<UnityLoaderProps> = ({ gameName, buildName, o
 
   unityContent.on("LogEvent", (eventJSON: string) => {
     const event: GameEvent = JSON.parse(eventJSON);
-    console.log(event);
     fetch(API_BASE_URL + 'events', {
       method: 'POST',
       body: JSON.stringify(event), 

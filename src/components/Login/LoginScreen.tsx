@@ -14,11 +14,11 @@ export const Login: React.FC = () => {
   // what to do when user completes login/register
   function onActionComplete() {
     localStorage.setItem('iagSession', 'ongoing');
-    history.push('/games');
+    history.push('/');
   }
 
   if(isLoggedIn()){
-    history.push('/games');
+    history.push('/');
   }
     
   return (

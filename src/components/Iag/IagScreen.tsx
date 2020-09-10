@@ -57,6 +57,12 @@ export const Iag: React.FC = () => {
       // TODO: This could be anything, validate data.
       const user: UserData = res as UserData;
       setUserData(user);
+      if(user.questionsCompleted){
+        history.push('/games');
+      }
+      else {
+        history.push('/questions');
+      }
     })
     .catch(e => {
       // Remove local session and return to login screen.
@@ -101,7 +107,7 @@ export const Iag: React.FC = () => {
 
       <Menu>
       {/* Only display games link if not in questions screen */}
-      {history.location.pathname !== '/questions' && (
+      {userData !== null && userData.questionsCompleted && (
         <Link to='/games'>
           <Menu.Item name="games">
             <Icon name="gamepad" />
@@ -156,7 +162,10 @@ export const Iag: React.FC = () => {
       </Route>
       <Route path='/questions'>
         <QuestionsPanel
-          onQuestionsSubmitted={() => history.push('/games')}
+          onQuestionsSubmitted={() => {
+            userData.questionsCompleted = true;
+            history.push('/games');
+          }}
         />
       </Route>
     </div>
