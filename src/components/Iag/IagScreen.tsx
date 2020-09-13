@@ -95,6 +95,24 @@ export const Iag: React.FC = () => {
     gameName === 'blek' ? history.push('/blek-video') : history.push('/' + gameName);
   }
   
+  function onGameOver(gameName: string){
+    setUserData(prevState => (prevState? { 
+      ...prevState,
+      blekPlayed: userData?.blekPlayed || gameName === 'blek',
+      unpossiblePlayed: userData?.unpossiblePlayed || gameName === 'unpossible',
+      edgePlayed: userData?.edgePlayed || gameName === 'edge',
+    }: undefined));
+    history.push('/games');
+  }
+
+  function onQuestionsCompleted(){
+    setUserData(prevState => (prevState? { 
+      ...prevState,
+      questionsCompleted: true,
+    }: undefined));
+    history.push('/games');
+  }
+
   if(!userData){
     return <p>Loading user data...</p>;
   }
@@ -107,7 +125,7 @@ export const Iag: React.FC = () => {
 
       <Menu>
       {/* Only display games link if not in questions screen */}
-      {userData !== null && userData.questionsCompleted && (
+      {history.location.pathname !== 'questions' && (
         <Link to='/games'>
           <Menu.Item name="games">
             <Icon name="gamepad" />
@@ -143,29 +161,26 @@ export const Iag: React.FC = () => {
         <UnityLoader
           buildName="BlekWeb"
           gameName="Blek"
-          onGameOver={() => history.push('/games')}
+          onGameOver={() => onGameOver('blek')}
         />
       </Route>
       <Route path='/edge'>
         <UnityLoader
           buildName="Edge Web"
           gameName="Edge"
-          onGameOver={() => history.push('/games')}
+          onGameOver={() => onGameOver('edge')}
         />
       </Route>
       <Route path='/unpossible'>
         <UnityLoader
           buildName="Build"
           gameName="Unpossible"
-          onGameOver={() => history.push('/games')}
+          onGameOver={() => onGameOver('unpossible')}
         />
       </Route>
       <Route path='/questions'>
         <QuestionsPanel
-          onQuestionsSubmitted={() => {
-            userData.questionsCompleted = true;
-            history.push('/games');
-          }}
+          onQuestionsSubmitted={() =>  onQuestionsCompleted()}
         />
       </Route>
     </div>

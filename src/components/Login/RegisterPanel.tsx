@@ -80,8 +80,6 @@ export const RegisterPanel: React.FC<RegisterPanelProps> = ({ onRegisterComplete
       {...prevState, error_reg : ''})
     );
 
-    console.log("Fetching");
-
     fetch(API_BASE_URL+'users', {
       method: 'POST',
       body: JSON.stringify(payload),
@@ -91,7 +89,6 @@ export const RegisterPanel: React.FC<RegisterPanelProps> = ({ onRegisterComplete
       credentials: 'include'
     })
     .then(function (response) {
-      console.log(response);
       if(response.status === 201){
         onRegisterComplete();
         return;
@@ -105,7 +102,6 @@ export const RegisterPanel: React.FC<RegisterPanelProps> = ({ onRegisterComplete
       }
     })
     .catch(function (error) {
-      console.log(error);
       return setRegState( prevState => ({ 
         ...prevState,
         error_reg: "Username already in use or incomplete field.",

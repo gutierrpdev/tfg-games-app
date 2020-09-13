@@ -45,9 +45,11 @@ export const UnityLoader: React.FC<UnityLoaderProps> = ({ gameName, buildName, o
   });
 
   unityContent.on("GameOver", () => {
-    const payload = {
-      blekCompleted: true
-    };
+    const payload = gameName === 
+      'blek' ? { blekCompleted: true }
+      : (gameName === 'edge' ? { edgeCompleted: true } 
+      : { unpossibleCompleted: true });
+
     fetch(API_BASE_URL + 'users/me', {
       method: 'PATCH',
       body: JSON.stringify(payload),
