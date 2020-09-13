@@ -9,14 +9,9 @@ export const App: React.FC = () => {
   return (
     <Router>
       <Switch>
-        <Route exact={true} path='/login'>
-          <Login />
-        </Route>
-
-        <Route path='/'>
-          <Iag/>
-        </Route>
-
+        <Route exact={true} path='/login' component={Login}/>
+        <Route exact={true} path='/profile' component={Iag}/>
+        <Route component={Iag} />
       </Switch>
     </Router>
   );

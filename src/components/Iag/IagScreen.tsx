@@ -10,9 +10,9 @@ import { YoutubeVideo } from '../YoutubeVideo/YoutubeVideo';
 import { Route, useHistory, Link } from 'react-router-dom';
 
 interface UserData {
-  blekPlayed: boolean;
-  edgePlayed: boolean;
-  unpossiblePlayed: boolean;
+  blekCompleted: boolean;
+  edgeCompleted: boolean;
+  unpossibleCompleted: boolean;
   userId: string;
   userAge: number;
   userGender: string;
@@ -32,9 +32,9 @@ export const Iag: React.FC = () => {
 
     /*
     setUserData({
-      blekPlayed: true,
-      unpossiblePlayed: false,
-      edgePlayed: true,
+      blekCompleted: true,
+      unpossibleCompleted: false,
+      edgeCompleted: true,
       questionsCompleted: true,
       userAge: 27,
       userId: 'test27',
@@ -58,10 +58,10 @@ export const Iag: React.FC = () => {
       const user: UserData = res as UserData;
       setUserData(user);
       if(user.questionsCompleted){
-        history.push('/games');
+        history.push('/profile/games');
       }
       else {
-        history.push('/questions');
+        history.push('/profile/questions');
       }
     })
     .catch(e => {
@@ -92,17 +92,17 @@ export const Iag: React.FC = () => {
   }
 
   function onGameSelect(gameName: string){
-    gameName === 'blek' ? history.push('/blek-video') : history.push('/' + gameName);
+    gameName === 'blek' ? history.push('/profile/blek-video') : history.push('/profile/' + gameName);
   }
   
   function onGameOver(gameName: string){
     setUserData(prevState => (prevState? { 
       ...prevState,
-      blekPlayed: userData?.blekPlayed || gameName === 'blek',
-      unpossiblePlayed: userData?.unpossiblePlayed || gameName === 'unpossible',
-      edgePlayed: userData?.edgePlayed || gameName === 'edge',
+      blekCompleted: userData?.blekCompleted || gameName === 'blek',
+      unpossibleCompleted: userData?.unpossibleCompleted || gameName === 'unpossible',
+      edgeCompleted: userData?.edgeCompleted || gameName === 'edge',
     }: undefined));
-    history.push('/games');
+    history.push('/profile/games');
   }
 
   function onQuestionsCompleted(){
@@ -110,7 +110,7 @@ export const Iag: React.FC = () => {
       ...prevState,
       questionsCompleted: true,
     }: undefined));
-    history.push('/games');
+    history.push('/profile/games');
   }
 
   if(!userData){
@@ -126,7 +126,7 @@ export const Iag: React.FC = () => {
       <Menu>
       {/* Only display games link if not in questions screen */}
       {history.location.pathname !== 'questions' && (
-        <Link to='/games'>
+        <Link to='/profile/games'>
           <Menu.Item name="games">
             <Icon name="gamepad" />
             Juegos
@@ -143,44 +143,44 @@ export const Iag: React.FC = () => {
         </Menu.Menu>
       </Menu>
 
-      <Route path='/games'>
+      <Route path='/profile/games'>
         <GamesPanel 
-          blekPlayed={userData.blekPlayed}
-          unpossiblePlayed={userData.unpossiblePlayed}
-          edgePlayed={userData.edgePlayed}
+          blekCompleted={userData.blekCompleted}
+          unpossibleCompleted={userData.unpossibleCompleted}
+          edgeCompleted={userData.edgeCompleted}
           onGameSelect={onGameSelect}
         />
       </Route>
-      <Route path='/blek-video'>
+      <Route path='/profile/blek-video'>
         <YoutubeVideo
           videoId="N5pWe61TzPA"
-          onVideoEnd={() => history.push('/blek')}
+          onVideoEnd={() => history.push('/profile/blek')}
         />
       </Route>
-      <Route path='/blek'>
+      <Route path='/profile/blek'>
         <UnityLoader
           buildName="BlekWeb"
           gameName="Blek"
           onGameOver={() => onGameOver('blek')}
         />
       </Route>
-      <Route path='/edge'>
+      <Route path='/profile/edge'>
         <UnityLoader
           buildName="Edge Web"
           gameName="Edge"
           onGameOver={() => onGameOver('edge')}
         />
       </Route>
-      <Route path='/unpossible'>
+      <Route path='/profile/unpossible'>
         <UnityLoader
           buildName="Build"
           gameName="Unpossible"
           onGameOver={() => onGameOver('unpossible')}
         />
       </Route>
-      <Route path='/questions'>
+      <Route path='/profile/questions'>
         <QuestionsPanel
-          onQuestionsSubmitted={() =>  onQuestionsCompleted()}
+          onQuestionsSubmitted={() => onQuestionsCompleted()}
         />
       </Route>
     </div>

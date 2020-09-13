@@ -3,21 +3,19 @@ import { Grid, Image, Button, Message} from 'semantic-ui-react';
 import './styles.css';
 
 interface GamesPanelProps {
-  blekPlayed: boolean;
-  edgePlayed: boolean;
-  unpossiblePlayed: boolean;
+  blekCompleted: boolean;
+  edgeCompleted: boolean;
+  unpossibleCompleted: boolean;
   onGameSelect: (gameName: string) => void;
 }
 
 export const GamesPanel: React.FC<GamesPanelProps> = 
-  ({ blekPlayed, edgePlayed, unpossiblePlayed, onGameSelect }) => 
+  ({ blekCompleted, edgeCompleted, unpossibleCompleted, onGameSelect }) => 
 {
   const information =[
     'Pulsa sobre "Empezar Juego!" bajo cada imagen para lanzarlo en tu navegador.',
     'Una vez abierto un juego, este debe ser completado "del tirón", evitando salir del mismo durante la partida. Cada actividad no debería llevar más de 15 minutos en ser completada.',
-    'Al principio de cada juego aparecerá una sección de tutorial para familiarizarte con las mecánicas del mismo. Una vez terminado el tutorial, podrás continuar con el juego en sí y tendrás un tiempo límite para completar todos los niveles que puedas. Se registrarán datos relativos a tu interacción con el juego.',
-    'Es necesario completar las tres pruebas para que los resultados sean válidos.',
-    'No olvides hacer click en la sección de Preguntas del menú cuando acabes con los juegos. ¡Muchas gracias por tu colaboración!'
+    'Al principio de cada juego aparecerá una sección de tutorial para familiarizarte con las mecánicas del mismo. Una vez terminado el tutorial, podrás continuar con el juego en sí y tendrás un tiempo límite para completar todos los niveles que puedas. Se registrarán datos relativos a tu interacción con el juego.'
   ];
   return (
     <div>
@@ -38,27 +36,27 @@ export const GamesPanel: React.FC<GamesPanelProps> =
           <Image src='/img/edge.jpg' size='large' rounded centered/>
           <Button onClick={() => onGameSelect('edge')} 
             attached='bottom'
-            color={edgePlayed?'green':'blue'}
+            color={edgeCompleted?'green':'blue'}
           >
-          {edgePlayed? 'Completado': 'Empezar juego!'}
+          {edgeCompleted? 'Completado': 'Empezar juego!'}
           </Button>
         </Grid.Column>
         <Grid.Column attached>
           <Image src='/img/blek.jpg' size='large' rounded centered/>
           <Button onClick={() => onGameSelect('blek')} 
             attached='bottom'
-            color={blekPlayed?'green':'blue'}
+            color={blekCompleted?'green':'blue'}
           >
-          {blekPlayed?'Completado':'Empezar juego!'}
+          {blekCompleted?'Completado':'Empezar juego!'}
           </Button>
         </Grid.Column>
         <Grid.Column>
           <Image src='/img/unpossible.png' size='large' rounded centered/>
           <Button onClick={() => onGameSelect('unpossible')} 
             attached='bottom'
-            color={unpossiblePlayed?'green':'blue'}
+            color={unpossibleCompleted?'green':'blue'}
           >
-          {unpossiblePlayed?'Completado':'Empezar juego!'}
+          {unpossibleCompleted?'Completado':'Empezar juego!'}
           </Button>
         </Grid.Column>
       </Grid>
