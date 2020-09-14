@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Unity, { UnityContent } from "react-unity-webgl";
-import {API_BASE_URL} from '../../constants/apiConstants';
+import { API_BASE_URL } from '../../constants/apiConstants';
 import { Progress, Container } from 'semantic-ui-react';
 
 interface GameEvent {
@@ -22,8 +22,8 @@ export const UnityLoader: React.FC<UnityLoaderProps> = ({ gameName, buildName, o
   const [progression, setProgression] = useState<number>(0);
 
   const unityContent = new UnityContent(
-    `build/${gameName}/${buildName}.json`,
-    `build/${gameName}/UnityLoader.js`,
+    `${process.env.PUBLIC_URL}/build/${gameName}/${buildName}.json`,
+    `${process.env.PUBLIC_URL}/build/${gameName}/UnityLoader.js`,
   );
 
   unityContent.on("progress", (progress: number) => {
