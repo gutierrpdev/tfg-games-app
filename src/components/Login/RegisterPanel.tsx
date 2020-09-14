@@ -31,7 +31,7 @@ interface RegisterPayload {
 };
 
 interface RegisterPanelProps {
-  onRegisterComplete: () => void;
+  onRegisterComplete: (userData: any) => void;
 }
 
 export const RegisterPanel: React.FC<RegisterPanelProps> = ({ onRegisterComplete }) => {
@@ -86,12 +86,11 @@ export const RegisterPanel: React.FC<RegisterPanelProps> = ({ onRegisterComplete
       headers: {
         'Content-Type': 'application/json'
       },
-      credentials: 'include'
+      /*credentials: 'include'*/
     })
     .then(function (response) {
       if(response.status === 201){
-        onRegisterComplete();
-        return;
+        return response.json();
       }
       else {
         return setRegState( prevState => ({ 
@@ -101,6 +100,7 @@ export const RegisterPanel: React.FC<RegisterPanelProps> = ({ onRegisterComplete
         }));
       }
     })
+    .then(data => onRegisterComplete(data))
     .catch(function (error) {
       return setRegState( prevState => ({ 
         ...prevState,

@@ -23,7 +23,7 @@ interface LoginPayload {
 }
 
 interface LoginPanelProps {
-  onLoginComplete: () => void;
+  onLoginComplete: (userData: any) => void;
 }
 
 export const LoginPanel: React.FC<LoginPanelProps> = ({onLoginComplete }) => {
@@ -54,15 +54,15 @@ export const LoginPanel: React.FC<LoginPanelProps> = ({onLoginComplete }) => {
     fetch(API_BASE_URL+'users/login', {
       method: 'POST',
       body: JSON.stringify(payload),
-      credentials: 'include',
+      /*credentials: 'include',*/
       headers: {
         'Content-Type': 'application/json'
       }
     })
     .then(function (response) {
-      if(response.status === 200){
+      if(response.status === 201){
         setLoginState( prevState => ({...prevState, login_loading : false}));
-        onLoginComplete();
+        return response.json();
       }
       else {
         return setLoginState(prevState => ({
@@ -72,6 +72,7 @@ export const LoginPanel: React.FC<LoginPanelProps> = ({onLoginComplete }) => {
         }));
       }
     })
+    .then(data => onLoginComplete(data))
     .catch(function (error) {
       console.log(error);
       return setLoginState(prevState => ({

@@ -6,19 +6,22 @@ import './styles.css';
 import { LoginPanel } from './LoginPanel';
 import { RegisterPanel } from './RegisterPanel';
 import { useHistory } from 'react-router-dom';
+import jwt_decode from 'jwt-decode';
 
 export const Login: React.FC = () => {
   
   let history = useHistory();
   
   // what to do when user completes login/register
-  function onActionComplete() {
+  function onActionComplete(userData: any) {
+    localStorage.setItem('user', JSON.stringify(userData.user));
+    localStorage.setItem('token', userData.token);
     localStorage.setItem('iagSession', 'ongoing');
-    history.push('/');
+    history.push('/profile');
   }
 
   if(isLoggedIn()){
-    history.push('/');
+    history.push('/profile');
   }
     
   return (
@@ -55,6 +58,17 @@ export const Login: React.FC = () => {
   );
 }
 
-const isLoggedIn = () => localStorage.getItem('iagSession') === 'ongoing';
+const isLoggedIn = () => {
+  const token = localStorage.getItem('token');
+  if(!token) return false;
+
+  const decoded = jwt_decode(token) as any;
+  const current_time = new Date().getTime() / 1000;
+  if (current_time > decoded.exp) { 
+  /* expired */ 
+  return false;
+  }
+  return true;
+};
 
 export default Login;

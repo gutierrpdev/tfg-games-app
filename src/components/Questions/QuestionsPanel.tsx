@@ -24,11 +24,16 @@ export const QuestionsPanel: React.FC<QuestionsPanelProps> = ({ onQuestionsSubmi
   function sendForm(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: ButtonProps){
     e.preventDefault();
     
+    const body = {
+      payload: {knowsBlek, knowsEdge, knowsUnpossible, questionsCompleted: true},
+      token: localStorage.getItem('token')
+    };
+
     // TODO: move to api
     fetch(API_BASE_URL + 'users/me', {
       method: 'PATCH',
-      body: JSON.stringify({knowsBlek, knowsEdge, knowsUnpossible, questionsCompleted: true}),
-      credentials: 'include',
+      body: JSON.stringify(body),
+      /*credentials: 'include',*/
       headers: {
         'Content-Type': 'application/json'
       }

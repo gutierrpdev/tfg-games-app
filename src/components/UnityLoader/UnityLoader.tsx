@@ -32,10 +32,15 @@ export const UnityLoader: React.FC<UnityLoaderProps> = ({ gameName, buildName, o
 
   unityContent.on("LogEvent", (eventJSON: string) => {
     const event: GameEvent = JSON.parse(eventJSON);
+    const body = {
+      payload: event,
+      token: localStorage.getItem('token')
+    };
+
     fetch(API_BASE_URL + 'events', {
       method: 'POST',
-      body: JSON.stringify(event), 
-      credentials: 'include',
+      body: JSON.stringify(body), 
+      /* credentials: 'include',*/ 
       headers: {
         'Content-Type': 'application/json'
       }
@@ -49,11 +54,15 @@ export const UnityLoader: React.FC<UnityLoaderProps> = ({ gameName, buildName, o
       'blek' ? { blekCompleted: true }
       : (gameName === 'edge' ? { edgeCompleted: true } 
       : { unpossibleCompleted: true });
+    const body = {
+      payload: payload,
+      token: localStorage.getItem('token')
+    };
 
     fetch(API_BASE_URL + 'users/me', {
       method: 'PATCH',
-      body: JSON.stringify(payload),
-      credentials: 'include',
+      body: JSON.stringify(body),
+      /* credentials: 'include', */
       headers: {
         'Content-Type': 'application/json'
       }

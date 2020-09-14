@@ -9,6 +9,8 @@ import { UnityLoader } from '../UnityLoader/UnityLoader';
 import { YoutubeVideo } from '../YoutubeVideo/YoutubeVideo';
 import { Route, useHistory, Link } from 'react-router-dom';
 
+import jwt_decode from 'jwt-decode';
+
 interface UserData {
   blekCompleted: boolean;
   edgeCompleted: boolean;
@@ -45,7 +47,7 @@ export const Iag: React.FC = () => {
     // TODO: Move to api.
     fetch(API_BASE_URL + 'users/me', {
       method:"GET",
-      credentials : 'include',
+      /*credentials : 'include',*/
       headers: {
         'Accept': 'application/json'
       }
@@ -67,23 +69,46 @@ export const Iag: React.FC = () => {
     .catch(e => {
       // Remove local session and return to login screen.
       localStorage.removeItem('iagSession');
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
       history.push('/login');
     });
   }, [history]);
 
   // Get user profile on first load.
   useEffect(() => {
-    isLoggedIn() ? getProfile() : history.push('/login');
+    if(isLoggedIn()){
+      const user = localStorage.getItem('user');
+      if(user === null) history.push('/login');
+      else {
+        const userParsed = JSON.parse(user) as UserData;
+        setUserData(userParsed);
+        userParsed.questionsCompleted? history.push('/profile/games') : history.push('/profile/questions');
+      }
+    }
+    else {
+      history.push('/login');
+    }
   }, [history, getProfile]);
 
   // TODO: move to api
   function handleLogout() {
+    const body = {
+      token: localStorage.getItem('token')
+    };
+
     fetch(API_BASE_URL + 'users/logout', {
       method:"POST",
-      credentials : 'include'
+      /* credentials : 'include' */
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body),
     })
     .then((res) => {
       localStorage.removeItem('iagSession');
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
       history.push('/login');
     })
     .catch(err => {
@@ -187,4 +212,15 @@ export const Iag: React.FC = () => {
   );
 };
 
-const isLoggedIn = () => localStorage.getItem('iagSession') === 'ongoing';
+const isLoggedIn = () => {
+  const token = localStorage.getItem('token');
+  if(!token) return false;
+
+  const decoded = jwt_decode(token) as any;
+  const current_time = new Date().getTime() / 1000;
+  if (current_time > decoded.exp) { 
+  /* expired */ 
+    return false;
+  }
+  return true;
+};
