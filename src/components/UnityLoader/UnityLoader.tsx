@@ -51,8 +51,8 @@ export const UnityLoader: React.FC<UnityLoaderProps> = ({ gameName, buildName, o
 
   unityContent.on("GameOver", () => {
     const payload = gameName === 
-      'blek' ? { blekCompleted: true }
-      : (gameName === 'edge' ? { edgeCompleted: true } 
+      'Blek' ? { blekCompleted: true }
+      : (gameName === 'Edge' ? { edgeCompleted: true } 
       : { unpossibleCompleted: true });
     const body = {
       payload: payload,
