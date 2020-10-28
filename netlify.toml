@@ -6,3 +6,8 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+[[headers]]
+  for = "*.unityweb"
+  [headers.values]
+    Content-Encoding = "gzip"
