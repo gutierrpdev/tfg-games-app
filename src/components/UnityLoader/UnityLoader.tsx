@@ -22,8 +22,8 @@ export const UnityLoader: React.FC<UnityLoaderProps> = ({ gameName, buildName, o
   const [progression, setProgression] = useState<number>(0);
 
   const unityContent = new UnityContent(
-    `${process.env.PUBLIC_URL}/build/${gameName}/${buildName}.json`,
-    `${process.env.PUBLIC_URL}/build/${gameName}/UnityLoader.js`,
+    `${process.env.PUBLIC_URL}/builds/${gameName}/${buildName}.json`,
+    `${process.env.PUBLIC_URL}/builds/${gameName}/UnityLoader.js`,
   );
 
   unityContent.on("progress", (progress: number) => {
