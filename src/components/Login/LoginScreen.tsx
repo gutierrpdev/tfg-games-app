@@ -27,12 +27,12 @@ export const Login: React.FC = () => {
   return (
     <div className="login">
       <Helmet>
-        <title>Intelligence Assessment Games | Login</title>
+        <title>Juegos TFG | Login</title>
       </Helmet>
 
       <Header as='h2' icon textAlign='center'>
         <Icon name='chess' circular />
-          <Header.Content>Juegos para la medida de la inteligencia</Header.Content>
+          <Header.Content>Juegos TFG</Header.Content>
       </Header>
 
       <Message
