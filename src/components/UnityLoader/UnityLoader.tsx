@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Unity, { UnityContent } from "react-unity-webgl";
 import { API_BASE_URL } from '../../constants/apiConstants';
-import { Progress, Container } from 'semantic-ui-react';
+import { Progress, Container, Message } from 'semantic-ui-react';
 
 interface GameEvent {
   timestamp: number;
@@ -9,7 +9,7 @@ interface GameEvent {
   gameName: string;
   name: string;
   orderInSequence: number;
-  parameters: Array<{name: string, value: string}>;
+  parameters: Array<{ name: string, value: string }>;
 };
 
 interface UnityLoaderProps {
@@ -39,21 +39,21 @@ export const UnityLoader: React.FC<UnityLoaderProps> = ({ gameName, buildName, o
 
     fetch(API_BASE_URL + 'events', {
       method: 'POST',
-      body: JSON.stringify(body), 
-      /* credentials: 'include',*/ 
+      body: JSON.stringify(body),
+      /* credentials: 'include',*/
       headers: {
         'Content-Type': 'application/json'
       }
     })
-    .then(response => console.log(response))
-    .catch(err => console.log(err));
+      .then(response => console.log(response))
+      .catch(err => console.log(err));
   });
 
   unityContent.on("GameOver", () => {
-    const payload = gameName === 
+    const payload = gameName ===
       'Blek' ? { blekCompleted: true }
-      : (gameName === 'Edge' ? { edgeCompleted: true } 
-      : { unpossibleCompleted: true });
+      : (gameName === 'Edge' ? { edgeCompleted: true }
+        : { unpossibleCompleted: true });
     const body = {
       payload: payload,
       token: localStorage.getItem('token')
@@ -67,28 +67,35 @@ export const UnityLoader: React.FC<UnityLoaderProps> = ({ gameName, buildName, o
         'Content-Type': 'application/json'
       }
     })
-    .then(response => {
-      console.log(response);
-      onGameOver();
-    })
-    .catch(err => {
-      console.log(err);
-    });
+      .then(response => {
+        console.log(response);
+        onGameOver();
+      })
+      .catch(err => {
+        console.log(err);
+      });
   });
 
   unityContent.setFullscreen(false);
 
   return (
     <div>
-      {progression < 1 && (
-      <Progress 
-        percent={progression * 100}
-        indicating={progression < 1}
-        label={progression < 1? 'Cargando juego': 'Carga Completada!'}
-        progress='percent'/>
+      {progression < 0.95 && (
+        <Progress
+          percent={progression * 100}
+          indicating={progression < 1}
+          label={progression < 1 ? 'Cargando juego' : 'Carga Completada!'}
+          progress='percent' />
       )}
+      {(progression > 0.85 && progression < 0.95) &&
+        <Message
+          icon='exclamation circle' size='small'
+          header='Carga interrumpida'
+          content='Si la carga del juego se queda congelada en 90% durante demasiado tiempo, recarga la página y vuelve a hacer click sobre este juego. Perdón por las molestias.'
+        />
+      }
       <Container height='auto'>
-        <Unity unityContent={unityContent}/>
+        <Unity unityContent={unityContent} />
       </Container>
     </div>);
 }
