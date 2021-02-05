@@ -27,11 +27,27 @@ export class Api {
 
   public constructor(
     private apiUrl: string,
+    private flaskUrl: string,
   ) {}
 
   public async getUser(): Promise<ApiResult<GetUserResponse>> {
     const url = `${this.apiUrl}/users/me`;
     return apiRequestGET<GetUserResponse>(url, getUserResponseSchema);
+  }
+
+  public async getBlekResult(userId: string): Promise<ApiResult<{ maxLevels: number }>> {
+    const url = `${this.flaskUrl}/blek/${userId}`;
+    return apiRequestGET<{ maxLevels: number }>(url, getUserResponseSchema);
+  }
+
+  public async getEdgeResult(userId: string): Promise<ApiResult<{ maxLevels: number }>> {
+    const url = `${this.flaskUrl}/edge/${userId}`;
+    return apiRequestGET<{ maxLevels: number }>(url, getUserResponseSchema);
+  }
+
+  public async getUnpossibleResult(userId: string): Promise<ApiResult<{ numTries: number }>> {
+    const url = `${this.flaskUrl}/unpossible/${userId}`;
+    return apiRequestGET<{ numTries: number }>(url, getUserResponseSchema);
   }
 
   public async submitLogin(userId: string, password: string): Promise<ApiResult<void>> {

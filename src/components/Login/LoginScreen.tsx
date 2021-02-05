@@ -9,9 +9,9 @@ import { useHistory } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 
 export const Login: React.FC = () => {
-  
+
   let history = useHistory();
-  
+
   // what to do when user completes login/register
   function onActionComplete(userData: any) {
     localStorage.setItem('user', JSON.stringify(userData.user));
@@ -20,10 +20,10 @@ export const Login: React.FC = () => {
     history.push('/profile');
   }
 
-  if(isLoggedIn()){
+  if (isLoggedIn()) {
     history.push('/profile');
   }
-    
+
   return (
     <div className="login">
       <Helmet>
@@ -32,7 +32,7 @@ export const Login: React.FC = () => {
 
       <Header as='h2' icon textAlign='center'>
         <Icon name='chess' circular />
-          <Header.Content>Juegos TFG</Header.Content>
+        <Header.Content>Juegos TFG</Header.Content>
       </Header>
 
       <Message
@@ -42,17 +42,17 @@ export const Login: React.FC = () => {
       />
 
       <Segment placeholder className="login-body">
-        <Grid columns={2} relaxed='very' stackable verticalAlign='middle' className="padded-login">        
-        <Grid.Column >
-          <LoginPanel onLoginComplete={onActionComplete}/>
-        </Grid.Column>
+        <Grid columns={2} relaxed='very' stackable verticalAlign='middle' className="padded-login">
+          <Grid.Column >
+            <LoginPanel onLoginComplete={onActionComplete} />
+          </Grid.Column>
 
-        <Grid.Column>
-          <RegisterPanel onRegisterComplete={onActionComplete}/>
-        </Grid.Column>
-      </Grid>
+          <Grid.Column>
+            <RegisterPanel onRegisterComplete={onActionComplete} />
+          </Grid.Column>
+        </Grid>
 
-      <Divider vertical>Ó</Divider>
+        <Divider vertical>Ó</Divider>
       </Segment>
     </div>
   );
@@ -60,13 +60,13 @@ export const Login: React.FC = () => {
 
 const isLoggedIn = () => {
   const token = localStorage.getItem('token');
-  if(!token) return false;
+  if (!token) return false;
 
   const decoded = jwt_decode(token) as any;
   const current_time = new Date().getTime() / 1000;
-  if (current_time > decoded.exp) { 
-  /* expired */ 
-  return false;
+  if (current_time > decoded.exp) {
+    /* expired */
+    return false;
   }
   return true;
 };

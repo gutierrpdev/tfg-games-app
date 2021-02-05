@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import { GamesPanel } from '../Games/GamesPanel';
 
 import { QuestionsPanel } from '../Questions/QuestionsPanel';
-import { API_BASE_URL } from '../../constants/apiConstants';
+import { API_BASE_URL, FLASK_URL } from '../../constants/apiConstants';
 import { UnityLoader } from '../UnityLoader/UnityLoader';
 import { YoutubeVideo } from '../YoutubeVideo/YoutubeVideo';
 import { Route, useHistory, Link } from 'react-router-dom';
@@ -26,70 +26,116 @@ export const Iag: React.FC = () => {
 
   // User Data
   const [userData, setUserData] = useState<UserData | undefined>(undefined);
+  // Game results
+  const [blekResult, setBlekResult] = useState<number | undefined>(undefined);
+  const [edgeResult, setEdgeResult] = useState<number | undefined>(undefined);
+  const [unpossibleResult, setUnpossibleResult] = useState<number | undefined>(undefined);
 
   // use history
   let history = useHistory();
 
-  const getProfile = useCallback(() => {
-
-    /*
-    setUserData({
-      blekCompleted: true,
-      unpossibleCompleted: false,
-      edgeCompleted: true,
-      questionsCompleted: true,
-      userAge: 27,
-      userId: 'test27',
-      userGender: 'Male',
-    });
-    return;*/
-
+  const getProfile = useCallback(async () => {
     // TODO: Move to api.
-    fetch(API_BASE_URL + 'users/me', {
-      method:"GET",
-      /*credentials : 'include',*/
-      headers: {
-        'Accept': 'application/json'
-      }
-    })
-    .then((data) => {
-      return data.json();
-    })
-    .then((res)=>{
-      // TODO: This could be anything, validate data.
-      const user: UserData = res as UserData;
+    try {
+      const user: UserData = await (await fetch(API_BASE_URL + 'users/me', {
+        method: "GET",
+        /*credentials : 'include',*/
+        headers: {
+          'Accept': 'application/json'
+        }
+      })).json();
+
       setUserData(user);
-      if(user.questionsCompleted){
+
+      if (user.questionsCompleted) {
         history.push('/profile/games');
       }
       else {
         history.push('/profile/questions');
       }
-    })
-    .catch(e => {
+    } catch (error) {
       // Remove local session and return to login screen.
       localStorage.removeItem('iagSession');
       localStorage.removeItem('user');
       localStorage.removeItem('token');
       history.push('/login');
-    });
+    }
   }, [history]);
 
   // Get user profile on first load.
   useEffect(() => {
-    if(isLoggedIn()){
+    if (isLoggedIn()) {
       const user = localStorage.getItem('user');
-      if(user === null) history.push('/login');
+      if (user === null) history.push('/login');
       else {
         const userParsed = JSON.parse(user) as UserData;
         setUserData(userParsed);
-        userParsed.questionsCompleted? history.push('/profile/games') : history.push('/profile/questions');
+        userParsed.questionsCompleted ? history.push('/profile/games') : history.push('/profile/questions');
       }
     }
     else {
       history.push('/login');
     }
   }, [history, getProfile]);
+
+  useEffect(() => {
+    if (userData) {
+      updateResults(userData)
+      .then(() => {
+        console.log('Results updated');
+      });
+    }
+  }, [userData, history]);
+
+  const updateResults = async (user: UserData) => {
+    if (user.blekCompleted) {
+      try {
+        const blekRes: { maxLevels: number[] } = await(await fetch(FLASK_URL + `blek/${user.userId}`, {
+          method: "GET",
+          /*credentials : 'include',*/
+          headers: {
+            'Accept': 'application/json'
+          }
+        })).json();
+        setBlekResult(blekRes.maxLevels.length > 0 ? blekRes.maxLevels[0] : undefined);
+      }
+      catch (e) {
+        setBlekResult(undefined);
+      }
+    }
+
+    if (user.edgeCompleted) {
+      try {
+        const edgeRes: { maxLevels: number[] } = await(await fetch(FLASK_URL + `edge/${user.userId}`, {
+          method: "GET",
+          /*credentials : 'include',*/
+          headers: {
+            'Accept': 'application/json'
+          }
+        })).json();
+        setEdgeResult(edgeRes.maxLevels.length > 0 ? edgeRes.maxLevels[0] : undefined);
+      }
+      catch (e) {
+        setEdgeResult(undefined);
+      }
+    }
+
+    if (user.unpossibleCompleted) {
+      try {
+        const unpRes: { numTries: number[] } = await(await fetch(FLASK_URL + `unpossible/${user.userId}`, {
+          method: "GET",
+          /*credentials : 'include',*/
+          headers: {
+            'Accept': 'application/json'
+          }
+        })).json();
+        setUnpossibleResult(unpRes.numTries.length > 0 ? unpRes.numTries[0] : undefined);
+      }
+      catch (e) {
+        setUnpossibleResult(undefined);
+      }
+    }
+  };
 
   // TODO: move to api
   function handleLogout() {
@@ -98,47 +144,47 @@ export const Iag: React.FC = () => {
     };
 
     fetch(API_BASE_URL + 'users/logout', {
-      method:"POST",
+      method: "POST",
       /* credentials : 'include' */
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(body),
     })
-    .then((res) => {
-      localStorage.removeItem('iagSession');
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      history.push('/login');
-    })
-    .catch(err => {
-      console.log(err);
-    })
+      .then((res) => {
+        localStorage.removeItem('iagSession');
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        history.push('/login');
+      })
+      .catch(err => {
+        console.log(err);
+      })
   }
 
-  function onGameSelect(gameName: string){
+  function onGameSelect(gameName: string) {
     gameName === 'blek' ? history.push('/profile/blek-video') : history.push('/profile/' + gameName);
   }
-  
-  function onGameOver(gameName: string){
-    setUserData(prevState => (prevState? { 
+
+  function onGameOver(gameName: string) {
+    setUserData(prevState => (prevState ? {
       ...prevState,
       blekCompleted: userData?.blekCompleted || gameName === 'blek',
       unpossibleCompleted: userData?.unpossibleCompleted || gameName === 'unpossible',
       edgeCompleted: userData?.edgeCompleted || gameName === 'edge',
-    }: undefined));
+    } : undefined));
     history.push('/profile/games');
   }
 
-  function onQuestionsCompleted(){
-    setUserData(prevState => (prevState? { 
+  function onQuestionsCompleted() {
+    setUserData(prevState => (prevState ? {
       ...prevState,
       questionsCompleted: true,
-    }: undefined));
+    } : undefined));
     history.push('/profile/games');
   }
 
-  if(!userData){
+  if (!userData) {
     return <p>Loading user data...</p>;
   }
 
@@ -149,17 +195,17 @@ export const Iag: React.FC = () => {
       </Helmet>
 
       <Menu>
-      {/* Only display games link if not in questions screen */}
-      {history.location.pathname !== 'questions' && (
-        <Link to='/profile/games'>
-          <Menu.Item name="games">
-            <Icon name="gamepad" />
+        {/* Only display games link if not in questions screen */}
+        {history.location.pathname !== 'questions' && (
+          <Link to='/profile/games'>
+            <Menu.Item name="games">
+              <Icon name="gamepad" />
             Juegos
           </Menu.Item>
-        </Link>)}
+          </Link>)}
 
         <Menu.Menu position='right'>
-          <Menu.Item name="logout" 
+          <Menu.Item name="logout"
             onClick={() => handleLogout()}
           >
             <Icon name="power" />
@@ -169,10 +215,13 @@ export const Iag: React.FC = () => {
       </Menu>
 
       <Route path='/profile/games'>
-        <GamesPanel 
+        <GamesPanel
           blekCompleted={userData.blekCompleted}
           unpossibleCompleted={userData.unpossibleCompleted}
           edgeCompleted={userData.edgeCompleted}
+          unpossibleResult={unpossibleResult}
+          edgeResult={edgeResult}
+          blekResult={blekResult}
           onGameSelect={onGameSelect}
         />
       </Route>
@@ -214,12 +263,12 @@ export const Iag: React.FC = () => {
 
 const isLoggedIn = () => {
   const token = localStorage.getItem('token');
-  if(!token) return false;
+  if (!token) return false;
 
   const decoded = jwt_decode(token) as any;
   const current_time = new Date().getTime() / 1000;
-  if (current_time > decoded.exp) { 
-  /* expired */ 
+  if (current_time > decoded.exp) {
+    /* expired */
     return false;
   }
   return true;

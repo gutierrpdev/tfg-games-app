@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Message, Grid, Image, Button, Checkbox, CheckboxProps, ButtonProps } from 'semantic-ui-react'
-import {API_BASE_URL} from '../../constants/apiConstants';
+import { API_BASE_URL } from '../../constants/apiConstants';
 
 interface QuestionsPanelProps {
   onQuestionsSubmitted: () => void;
@@ -14,18 +14,18 @@ export const QuestionsPanel: React.FC<QuestionsPanelProps> = ({ onQuestionsSubmi
   const values = [0, 1, 2, 3, 4, 5, 6, 7];
 
   function handleChange(e: React.FormEvent<HTMLInputElement>, data: CheckboxProps) {
-    switch(data.name){
+    switch (data.name) {
       case 'knowsBlek': setKnowsBlek(data.value as number); break;
       case 'knowsEdge': setKnowsEdge(data.value as number); break;
       case 'knowsUnpossible': setKnowsUnpossible(data.value as number); break;
     }
   }
 
-  function sendForm(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: ButtonProps){
+  function sendForm(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: ButtonProps) {
     e.preventDefault();
-    
+
     const body = {
-      payload: {knowsBlek, knowsEdge, knowsUnpossible, questionsCompleted: true},
+      payload: { knowsBlek, knowsEdge, knowsUnpossible, questionsCompleted: true },
       token: localStorage.getItem('token')
     };
 
@@ -38,15 +38,15 @@ export const QuestionsPanel: React.FC<QuestionsPanelProps> = ({ onQuestionsSubmi
         'Content-Type': 'application/json'
       }
     })
-    .then(response => {
-      onQuestionsSubmitted();
-    })
-    .catch(err => {
-      console.log(err);
-    });
-  } 
+      .then(response => {
+        onQuestionsSubmitted();
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
 
-  return(
+  return (
     <div>
       <Message
         icon='question circle outline' size='large'
@@ -55,11 +55,11 @@ export const QuestionsPanel: React.FC<QuestionsPanelProps> = ({ onQuestionsSubmi
 
       <Grid celled centered columns={3}>
         <Grid.Column attached>
-          <Image src='/img/edge.jpg' size="large" rounded centered/>
+          <Image src='/img/edge.jpg' size="large" rounded centered />
           <label>Valora tu nivel de experiencia con EDGE:</label>
           <Form.Group inline>
             {
-              values.map(val => 
+              values.map(val =>
                 <Form.Field key={val}>
                   <Checkbox
                     radio
@@ -75,11 +75,11 @@ export const QuestionsPanel: React.FC<QuestionsPanelProps> = ({ onQuestionsSubmi
           </Form.Group>
         </Grid.Column>
         <Grid.Column attached>
-          <Image src='/img/blek.jpg' size="large" rounded centered/>
+          <Image src='/img/blek.jpg' size="large" rounded centered />
           <label>Valora tu nivel de experiencia con BLEK:</label>
           <Form.Group inline>
             {
-              values.map(val => 
+              values.map(val =>
                 <Form.Field key={val}>
                   <Checkbox
                     radio
@@ -95,11 +95,11 @@ export const QuestionsPanel: React.FC<QuestionsPanelProps> = ({ onQuestionsSubmi
           </Form.Group>
         </Grid.Column>
         <Grid.Column attached>
-          <Image src='/img/unpossible.png' size="large" rounded centered/>
+          <Image src='/img/unpossible.png' size="large" rounded centered />
           <label>Valora tu nivel de experiencia con UNPOSSIBLE:</label>
           <Form.Group inline>
             {
-              values.map(val => 
+              values.map(val =>
                 <Form.Field key={val}>
                   <Checkbox
                     radio
@@ -114,11 +114,11 @@ export const QuestionsPanel: React.FC<QuestionsPanelProps> = ({ onQuestionsSubmi
             }
           </Form.Group>
         </Grid.Column>
-        <Button 
-          attached='bottom' 
-          onClick={sendForm} 
+        <Button
+          attached='bottom'
+          onClick={sendForm}
           color='blue'>
-            Enviar
+          Enviar
         </Button>
       </Grid>
     </div>

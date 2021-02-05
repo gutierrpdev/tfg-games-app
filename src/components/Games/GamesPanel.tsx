@@ -4,13 +4,18 @@ import './styles.css';
 
 interface GamesPanelProps {
   blekCompleted: boolean;
+  blekResult: number | undefined;
   edgeCompleted: boolean;
+  edgeResult: number | undefined;
   unpossibleCompleted: boolean;
+  unpossibleResult: number | undefined;
   onGameSelect: (gameName: string) => void;
 }
 
 export const GamesPanel: React.FC<GamesPanelProps> =
-  ({ blekCompleted, edgeCompleted, unpossibleCompleted, onGameSelect }) => {
+  ({ blekCompleted, edgeCompleted, unpossibleCompleted,
+    blekResult, edgeResult, unpossibleResult, onGameSelect }) => {
+
     const information = [
       'Pulsa sobre "Empezar Juego!" bajo cada imagen para lanzarlo en tu navegador.',
       'Una vez abierto un juego, este debe ser completado "del tirón", evitando salir del mismo durante la partida. Cada actividad no debería llevar más de 15 minutos en ser completada.',
@@ -43,7 +48,7 @@ export const GamesPanel: React.FC<GamesPanelProps> =
               attached='bottom'
               color={edgeCompleted ? 'green' : 'blue'}
             >
-              {edgeCompleted ? 'Completado' : 'Empezar juego!'}
+              {edgeResult ? `Puntuación conseguida: ${edgeResult}` : (edgeCompleted ? 'Completado' : 'Empezar juego!')}
             </Button>
           </Grid.Column>
           <Grid.Column attached>
@@ -52,7 +57,7 @@ export const GamesPanel: React.FC<GamesPanelProps> =
               attached='bottom'
               color={blekCompleted ? 'green' : 'blue'}
             >
-              {blekCompleted ? 'Completado' : 'Empezar juego!'}
+              {blekResult ? `Puntuación conseguida: ${blekResult}` : (blekCompleted ? 'Completado' : 'Empezar juego!')}
             </Button>
           </Grid.Column>
           <Grid.Column>
@@ -61,7 +66,7 @@ export const GamesPanel: React.FC<GamesPanelProps> =
               attached='bottom'
               color={unpossibleCompleted ? 'green' : 'blue'}
             >
-              {unpossibleCompleted ? 'Completado' : 'Empezar juego!'}
+              {unpossibleResult ? `Puntuación conseguida: ${unpossibleResult}` : (unpossibleCompleted ? 'Completado' : 'Empezar juego!')}
             </Button>
           </Grid.Column>
         </Grid>

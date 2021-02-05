@@ -35,52 +35,52 @@ interface RegisterPanelProps {
 }
 
 export const RegisterPanel: React.FC<RegisterPanelProps> = ({ onRegisterComplete }) => {
-      
+
   const [regState, setRegState] = useState<RegisterState>(defaultRegisterState);
 
   function onSubmitRegister(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    
+
     // show error message if no username or password are provided.
-    if(regState.username_reg.length < 1 
+    if (regState.username_reg.length < 1
       || regState.password_reg.length < 1
-      || regState.age_reg.length < 1 ){
-      return setRegState( prevState => (
-        {...prevState, error_reg: 'Please fill in all required fields'})
+      || regState.age_reg.length < 1) {
+      return setRegState(prevState => (
+        { ...prevState, error_reg: 'Please fill in all required fields' })
       );
     }
 
     // check if password matches confirm password
-    if(regState.password_reg !== regState.confirm_pass){
-      return setRegState( prevState => (
-        {...prevState, error_reg: 'Passwords do not match'})
+    if (regState.password_reg !== regState.confirm_pass) {
+      return setRegState(prevState => (
+        { ...prevState, error_reg: 'Passwords do not match' })
       );
     }
 
     // parse age
     let age = parseInt(regState.age_reg, 10);
-    if( age < 14 || age > 120){
-      return setRegState( prevState => (
-        {...prevState, error_reg: 'Age must be a valid number!'})
+    if (age < 14 || age > 120) {
+      return setRegState(prevState => (
+        { ...prevState, error_reg: 'Age must be a valid number!' })
       );
     }
-    
-    setRegState( prevState => (
-      {...prevState, reg_loading : true})
+
+    setRegState(prevState => (
+      { ...prevState, reg_loading: true })
     );
 
     const payload: RegisterPayload = {
       userId: regState.username_reg,
       password: regState.password_reg,
       age,
-      gender: regState.gender_reg,      
+      gender: regState.gender_reg,
     };
 
-    setRegState( prevState => (
-      {...prevState, error_reg : ''})
+    setRegState(prevState => (
+      { ...prevState, error_reg: '' })
     );
 
-    fetch(API_BASE_URL+'users', {
+    fetch(API_BASE_URL + 'users', {
       method: 'POST',
       body: JSON.stringify(payload),
       headers: {
@@ -88,37 +88,37 @@ export const RegisterPanel: React.FC<RegisterPanelProps> = ({ onRegisterComplete
       },
       /*credentials: 'include'*/
     })
-    .then(function (response) {
-      if(response.status === 201){
-        return response.json();
-      }
-      else {
-        return setRegState( prevState => ({ 
+      .then(function (response) {
+        if (response.status === 201) {
+          return response.json();
+        }
+        else {
+          return setRegState(prevState => ({
+            ...prevState,
+            error_reg: "Username already in use or incomplete field.",
+            reg_loading: false
+          }));
+        }
+      })
+      .then(data => onRegisterComplete(data))
+      .catch(function (error) {
+        return setRegState(prevState => ({
           ...prevState,
           error_reg: "Username already in use or incomplete field.",
           reg_loading: false
         }));
-      }
-    })
-    .then(data => onRegisterComplete(data))
-    .catch(function (error) {
-      return setRegState( prevState => ({ 
-        ...prevState,
-        error_reg: "Username already in use or incomplete field.",
-        reg_loading: false
-      }));
-    });
+      });
   }
 
   function handleRegisterChange(e: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) {
-    if(data.name in regState){
+    if (data.name in regState) {
       setRegState(prevState => ({
         ...prevState, [data.name]: data.value
       }));
     }
   }
 
-  function handleGenderChange(e: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps){
+  function handleGenderChange(e: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
     setRegState(prevState => ({
       ...prevState, [data.name]: data.value
     }));
@@ -138,7 +138,7 @@ export const RegisterPanel: React.FC<RegisterPanelProps> = ({ onRegisterComplete
           iconPosition='left'
           label='Nombre de Usuario'
           placeholder='Nombre de usuario...'
-          name = 'username_reg'
+          name='username_reg'
           onChange={handleRegisterChange}
           required
         />
@@ -173,12 +173,12 @@ export const RegisterPanel: React.FC<RegisterPanelProps> = ({ onRegisterComplete
           required
         />
 
-        <Form.Input 
+        <Form.Input
           label='Género'
           placeholder='Género...'
           required
         >
-          <Dropdown 
+          <Dropdown
             icon='venus mars'
             labeled
             button
@@ -187,13 +187,13 @@ export const RegisterPanel: React.FC<RegisterPanelProps> = ({ onRegisterComplete
             className='icon'
             selection
             options={[
-              {key: 1, text: "Hombre", value: "Male"},
-              {key: 2, text: "Mujer", value: "Female"}
+              { key: 1, text: "Hombre", value: "Male" },
+              { key: 2, text: "Mujer", value: "Female" }
             ]}
           />
         </Form.Input>
-        
-        <Button content='Registrarse!' primary onClick={onSubmitRegister}/>
+
+        <Button content='Registrarse!' primary onClick={onSubmitRegister} />
       </Form>
     </div>
   );
