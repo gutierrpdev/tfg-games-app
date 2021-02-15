@@ -18,8 +18,8 @@ export const About: React.FC = () => {
       </Helmet>
 
       <Message
-        icon='gamepad' size='big'
-        header='Portal de juegos para la medida de la inteligencia'
+        icon='question' size='big'
+        header='Portal de juegos TFG'
         content='Bienvenidos. En esta página encontraréis una serie de juegos desarrollados por alumnos de la facultad de informática de la
         UCM como parte de un TFG sobre el estudio de la inteligencia por medio de videojuegos. 
         Ante cualquier duda, problema técnico, o cuestión que quieras plantearnos, incluyendo feedback para mejorar la aplicación,

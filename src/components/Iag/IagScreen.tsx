@@ -10,6 +10,8 @@ import { YoutubeVideo } from '../YoutubeVideo/YoutubeVideo';
 import { Route, useHistory, Link } from 'react-router-dom';
 
 import jwt_decode from 'jwt-decode';
+import { Results } from './Results';
+import { About } from './About';
 
 interface UserData {
   blekCompleted: boolean;
@@ -26,10 +28,6 @@ export const Iag: React.FC = () => {
 
   // User Data
   const [userData, setUserData] = useState<UserData | undefined>(undefined);
-  // Game results
-  const [blekResult, setBlekResult] = useState<number | undefined>(undefined);
-  const [edgeResult, setEdgeResult] = useState<number | undefined>(undefined);
-  const [unpossibleResult, setUnpossibleResult] = useState<number | undefined>(undefined);
 
   // use history
   let history = useHistory();
@@ -77,65 +75,6 @@ export const Iag: React.FC = () => {
       history.push('/login');
     }
   }, [history, getProfile]);
-
-  useEffect(() => {
-    if (userData) {
-      updateResults(userData)
-      .then(() => {
-        console.log('Results updated');
-      });
-    }
-  }, [userData, history]);
-
-  const updateResults = async (user: UserData) => {
-    if (user.blekCompleted) {
-      try {
-        const blekRes: { maxLevels: number[] } = await(await fetch(FLASK_URL + `blek/${user.userId}`, {
-          method: "GET",
-          /*credentials : 'include',*/
-          headers: {
-            'Accept': 'application/json'
-          }
-        })).json();
-        setBlekResult(blekRes.maxLevels.length > 0 ? blekRes.maxLevels[0] : undefined);
-      }
-      catch (e) {
-        setBlekResult(undefined);
-      }
-    }
-
-    if (user.edgeCompleted) {
-      try {
-        const edgeRes: { maxLevels: number[] } = await(await fetch(FLASK_URL + `edge/${user.userId}`, {
-          method: "GET",
-          /*credentials : 'include',*/
-          headers: {
-            'Accept': 'application/json'
-          }
-        })).json();
-        setEdgeResult(edgeRes.maxLevels.length > 0 ? edgeRes.maxLevels[0] : undefined);
-      }
-      catch (e) {
-        setEdgeResult(undefined);
-      }
-    }
-
-    if (user.unpossibleCompleted) {
-      try {
-        const unpRes: { numTries: number[] } = await(await fetch(FLASK_URL + `unpossible/${user.userId}`, {
-          method: "GET",
-          /*credentials : 'include',*/
-          headers: {
-            'Accept': 'application/json'
-          }
-        })).json();
-        setUnpossibleResult(unpRes.numTries.length > 0 ? unpRes.numTries[0] : undefined);
-      }
-      catch (e) {
-        setUnpossibleResult(undefined);
-      }
-    }
-  };
 
   // TODO: move to api
   function handleLogout() {
@@ -196,13 +135,30 @@ export const Iag: React.FC = () => {
 
       <Menu>
         {/* Only display games link if not in questions screen */}
-        {history.location.pathname !== 'questions' && (
+        {history.location.pathname !== '/profile/questions' && (
+          <>
           <Link to='/profile/games'>
-            <Menu.Item name="games">
-              <Icon name="gamepad" />
-            Juegos
+            <Menu.Item name='games'>
+              <Icon name='gamepad' />
+              Juegos
           </Menu.Item>
-          </Link>)}
+          </Link>
+        
+        <Link to='/profile/results'>
+          <Menu.Item name='Resultados'>
+            <Icon name='calculator' />
+            Resultados
+          </Menu.Item>
+        </Link>
+
+        <Link to='/profile/about'>
+          <Menu.Item name='Contacto'>
+            <Icon name='question' />
+            Contacto
+          </Menu.Item>
+        </Link>
+        </>
+        )}
 
         <Menu.Menu position='right'>
           <Menu.Item name="logout"
@@ -219,9 +175,6 @@ export const Iag: React.FC = () => {
           blekCompleted={userData.blekCompleted}
           unpossibleCompleted={userData.unpossibleCompleted}
           edgeCompleted={userData.edgeCompleted}
-          unpossibleResult={unpossibleResult}
-          edgeResult={edgeResult}
-          blekResult={blekResult}
           onGameSelect={onGameSelect}
         />
       </Route>
@@ -256,6 +209,14 @@ export const Iag: React.FC = () => {
         <QuestionsPanel
           onQuestionsSubmitted={() => onQuestionsCompleted()}
         />
+      </Route>
+      <Route path='/profile/results'>
+        <Results
+          userId={userData.userId}
+        />
+      </Route>
+      <Route path='/profile/about'>
+        <About/>
       </Route>
     </div>
   );

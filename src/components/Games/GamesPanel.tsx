@@ -4,17 +4,13 @@ import './styles.css';
 
 interface GamesPanelProps {
   blekCompleted: boolean;
-  blekResult: number | undefined;
-  edgeCompleted: boolean;
-  edgeResult: number | undefined;
   unpossibleCompleted: boolean;
-  unpossibleResult: number | undefined;
+  edgeCompleted: boolean;
   onGameSelect: (gameName: string) => void;
 }
 
 export const GamesPanel: React.FC<GamesPanelProps> =
-  ({ blekCompleted, edgeCompleted, unpossibleCompleted,
-    blekResult, edgeResult, unpossibleResult, onGameSelect }) => {
+  ({ blekCompleted, edgeCompleted, unpossibleCompleted, onGameSelect }) => {
 
     const information = [
       'Pulsa sobre "Empezar Juego!" bajo cada imagen para lanzarlo en tu navegador.',
@@ -27,14 +23,24 @@ export const GamesPanel: React.FC<GamesPanelProps> =
           icon='gamepad' size='big'
           header='Portal de juegos TFG'
           content='Bienvenidos. En esta página encontraréis una serie de juegos desarrollados por alumnos de la facultad de informática de la
-        UCM como parte de un TFG sobre el estudio de la inteligencia por medio de videojuegos.'
+        UCM como parte de un TFG sobre el estudio de las capacidades cognitivas por medio de videojuegos.'
         />
 
-        <Message
-          icon='exclamation circle' size='large'
-          header='Compatibilidad de los juegos'
-          content='Esta plataforma está diseñada para ser usada desde un navegador web de PC (sólo Chrome, Edge o Firefox). ¡Los juegos no funcionarán si tratas de acceder desde un dispositivo móvil!'
-        />
+        <Message size='large' warning>
+          <Message.Header>
+          Compatibilidad de los juegos
+          </Message.Header>
+          Esta plataforma está diseñada para ser usada SÓLO desde los siguientes navegadores web de PC:
+          <Message.List>
+            <Message.Item>
+              En Windows/ Linux: Microsoft Edge, Chrome, Firefox
+            </Message.Item>
+            <Message.Item>
+              En Mac: únicamente Firefox
+            </Message.Item>
+          </Message.List>
+          Los juegos no funcionarán adecuadamente desde dispositivos móviles.
+        </Message>
 
         <Message>
           <Message.Header>Instrucciones e Indicaciones</Message.Header>
@@ -48,7 +54,7 @@ export const GamesPanel: React.FC<GamesPanelProps> =
               attached='bottom'
               color={edgeCompleted ? 'green' : 'blue'}
             >
-              {edgeResult ? `Puntuación conseguida: ${edgeResult}` : (edgeCompleted ? 'Completado' : 'Empezar juego!')}
+              {edgeCompleted ? 'Completado' : '¡Empezar juego!'}
             </Button>
           </Grid.Column>
           <Grid.Column attached>
@@ -57,7 +63,7 @@ export const GamesPanel: React.FC<GamesPanelProps> =
               attached='bottom'
               color={blekCompleted ? 'green' : 'blue'}
             >
-              {blekResult ? `Puntuación conseguida: ${blekResult}` : (blekCompleted ? 'Completado' : 'Empezar juego!')}
+              {blekCompleted ? 'Completado' : '¡Empezar juego!'}
             </Button>
           </Grid.Column>
           <Grid.Column>
@@ -66,7 +72,7 @@ export const GamesPanel: React.FC<GamesPanelProps> =
               attached='bottom'
               color={unpossibleCompleted ? 'green' : 'blue'}
             >
-              {unpossibleResult ? `Puntuación conseguida: ${unpossibleResult}` : (unpossibleCompleted ? 'Completado' : 'Empezar juego!')}
+              {unpossibleCompleted ? 'Completado' : '¡Empezar juego!'}
             </Button>
           </Grid.Column>
         </Grid>

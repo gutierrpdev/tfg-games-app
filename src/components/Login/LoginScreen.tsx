@@ -35,11 +35,21 @@ export const Login: React.FC = () => {
         <Header.Content>Juegos TFG</Header.Content>
       </Header>
 
-      <Message
-        icon='exclamation circle' size='large'
-        header='Compatibilidad de los juegos'
-        content='Esta plataforma está diseñada para ser usada desde un navegador web de PC (sólo Chrome, Edge o Firefox). ¡Los juegos no funcionarán si tratas de acceder desde un dispositivo móvil!'
-      />
+      <Message size='large' warning>
+        <Message.Header>
+        Compatibilidad de los juegos
+        </Message.Header>
+        Esta plataforma está diseñada para ser usada SÓLO desde los siguientes navegadores web de PC:
+        <Message.List>
+          <Message.Item>
+            En Windows/ Linux: Microsoft Edge, Chrome, Firefox
+          </Message.Item>
+          <Message.Item>
+            En Mac: únicamente Firefox
+          </Message.Item>
+        </Message.List>
+        Los juegos no funcionarán adecuadamente desde dispositivos móviles.
+      </Message>
 
       <Segment placeholder className="login-body">
         <Grid columns={2} relaxed='very' stackable verticalAlign='middle' className="padded-login">
