@@ -32,22 +32,22 @@ export class Api {
 
   public async getUser(): Promise<ApiResult<GetUserResponse>> {
     const url = `${this.apiUrl}/users/me`;
-    return apiRequestGET<GetUserResponse>(url, getUserResponseSchema);
+    return apiRequestGET<GetUserResponse>(url);
   }
 
   public async getBlekResult(userId: string): Promise<ApiResult<{ maxLevels: number }>> {
     const url = `${this.flaskUrl}/blek/${userId}`;
-    return apiRequestGET<{ maxLevels: number }>(url, getUserResponseSchema);
+    return apiRequestGET<{ maxLevels: number }>(url);
   }
 
-  public async getEdgeResult(userId: string): Promise<ApiResult<{ maxLevels: number }>> {
+  public async getEdgeResult(userId: string): Promise<ApiResult<{ maxLevels: number, totalCheckpoints: number }>> {
     const url = `${this.flaskUrl}/edge/${userId}`;
-    return apiRequestGET<{ maxLevels: number }>(url, getUserResponseSchema);
+    return apiRequestGET<{ maxLevels: number, totalCheckpoints: number }>(url);
   }
 
   public async getUnpossibleResult(userId: string): Promise<ApiResult<{ numTries: number }>> {
     const url = `${this.flaskUrl}/unpossible/${userId}`;
-    return apiRequestGET<{ numTries: number }>(url, getUserResponseSchema);
+    return apiRequestGET<{ numTries: number }>(url);
   }
 
   public async submitLogin(userId: string, password: string): Promise<ApiResult<void>> {
@@ -63,7 +63,7 @@ const ajv = new Ajv({
   removeAdditional: true,
 });
 
-async function apiRequestGET<T>(url: string, schema: {}): Promise<ApiResult<T>> {
+async function apiRequestGET<T>(url: string): Promise<ApiResult<T>> {
 
   const request = new Request(url, {
     method: 'GET',
@@ -89,12 +89,7 @@ async function apiRequestGET<T>(url: string, schema: {}): Promise<ApiResult<T>> 
   } catch (err) {
     return { kind: 'parse-error', errors: 'InvalidJson' };
   }
-
-  const valid = ajv.validate(schema, data);
-  if (!valid) {
-    return { kind: 'parse-error', errors: (ajv.errors as Ajv.ErrorObject[]) };
-  }
-
+  
   return { kind: 'ok', data: (data as T) };
 }
 
