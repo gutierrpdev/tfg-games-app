@@ -187,8 +187,10 @@ export const RegisterPanel: React.FC<RegisterPanelProps> = ({ onRegisterComplete
             className='icon'
             selection
             options={[
-              { key: 1, text: "Hombre", value: "Male" },
-              { key: 2, text: "Mujer", value: "Female" }
+              { key: 1, text: "Prefiero no indicarlo", value: "RatherNotSay" },
+              { key: 2, text: "Varón", value: "Male" },
+              { key: 3, text: "Mujer", value: "Female" },
+              { key: 4, text: "Otro", value: "Other" }
             ]}
           />
         </Form.Input>

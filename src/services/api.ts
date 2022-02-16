@@ -78,7 +78,7 @@ async function apiRequestGET<T>(url: string, schema: {}): Promise<ApiResult<T>> 
   try {
     response = await fetch(request);
   } catch (err) {
-    return { kind: 'fetch-error', error: err };
+    return { kind: 'fetch-error', error: err as Error };
   }
 
   if (!response.ok) return { kind: 'http-error', response };
@@ -111,7 +111,7 @@ async function apiRequestPOST<T>(url: string, payload: T): Promise<ApiResult<voi
       }
     });
   } catch (err) {
-    return { kind: 'fetch-error', error: err };
+    return { kind: 'fetch-error', error: err as Error };
   }
 
   if (!response.ok) return { kind: 'http-error', response };
